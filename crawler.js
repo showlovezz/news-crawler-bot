@@ -9,16 +9,18 @@ async function getLaborNews() {
     const $ = cheerio.load(html);
     const newsList = [];
 
-    // 選取包含新聞資訊的元素
+    // 選取包含新聞資訊的 .item_listblock，然後查找其中的 .item_list2 > h3 > a
     $('.item_listblock').each((index, element) => {
-      const title = $(element).find('.item_list2 a').text().trim();
-      const link = 'https://www.mol.gov.tw' + $(element).find('.item_list2 a').attr('href');
-      
+      const titleElement = $(element).find('.item_list2 h3 a');
+      const title = titleElement.text().trim();
+      const link = 'https://www.mol.gov.tw' + titleElement.attr('href');
+
       if (title && link) {
         newsList.push({ title, link });
       }
     });
 
+    console.log('爬取到的所有新聞數量:', newsList.length); // 檢查爬取的新聞數量
     return newsList;
   } catch (error) {
     console.error('爬取新聞時出錯:', error);
